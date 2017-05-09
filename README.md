@@ -56,6 +56,22 @@ If you have iedit mode set up:
 This associates `reason-mode` with `.re` and `.rei` files. To enable it explicitly, do
 <kbd>M-x reason-mode</kbd>.
 
+### Utop
+
+Reason-mode provides (opt-in) `rtop` support. At the moment only the native workflow is supported.
+
+First of all you need to install the [Utop Emacs integration](https://github.com/diml/utop#integration-with-emacs). Make sure it is latest `master` because the feature is fairly new.
+
+Then in your Emacs init file add:
+
+```
+(require 'utop)
+(setq utop-command "opam config exec -- rtop -emacs")
+(add-hook 'reason-mode-hook #'utop-minor-mode) ;; can be included in the hook above as well
+```
+
+After this, the function `utop` (`C-c C-s`) will start `rtop` in Reason buffers.
+
 ### Spacemacs
 
 There is currently no offical reason layer available, but you can install the `reason-mode` package automatically.
