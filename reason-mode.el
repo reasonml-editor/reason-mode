@@ -27,6 +27,10 @@
 
 ;;; Code:
 
+(require 'reason-indent)
+(require 'refmt)
+(require 'reason-interaction)
+
 (eval-when-compile (require 'rx)
                    (require 'compile)
                    (require 'url-vars))
@@ -154,7 +158,6 @@
 (defalias 'reason-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
-(require 'reason-indent)
 
 ;;;###autoload
 (define-derived-mode reason-mode reason-parent-mode "Reason"
@@ -193,11 +196,10 @@
   (interactive)
   (unload-feature 'reason-mode)
   (unload-feature 'reason-indent)
+  (unload-feature 'reason-interaction)
   (require 'reason-mode)
   (reason-mode))
 
-(require 'refmt)
-(require 'reason-interaction)
 (provide 'reason-mode)
 
 ;;; reason-mode.el ends here
