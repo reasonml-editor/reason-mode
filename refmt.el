@@ -36,6 +36,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (defcustom refmt-command "refmt"
   "The 'refmt' command."
   :type 'string

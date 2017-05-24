@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+(defconst reason-re-ident "[[:word:][:multibyte:]_][[:word:][:multibyte:]_[:digit:]]*")
+
 (defcustom reason-indent-offset 2
   "Indent Reason code by this number of spaces."
   :type 'integer
