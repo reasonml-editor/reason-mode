@@ -1,6 +1,12 @@
 ;;; reason-mode.el --- A major emacs mode for editing Reason (based on rust-mode) -*-lexical-binding: t-*-
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
+;;; Commentary:
+
+;; Indentation functions for Reason.
+
+;;; Code:
+
 (defcustom reason-indent-offset 2
   "Indent Reason code by this number of spaces."
   :type 'integer
@@ -260,3 +266,5 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
         (save-excursion (indent-line-to indent))))))
 
 (provide 'reason-indent)
+
+;;; reason-indent.el ends here

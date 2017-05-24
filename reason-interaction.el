@@ -1,11 +1,14 @@
 ;;; reason-mode.el --- A major emacs mode for editing Reason (based on rust-mode) -*-lexical-binding: t-*-
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
-;; phrase navigation for utop et. al
+;;; Commentary:
 
-;;; Utop compatibility layer for Reason
-;;; Logic mainly taken from: https://github.com/ocaml/tuareg/blob/master/tuareg-light.el (big thanks!)
-;;; It is not perfect and does not consider the fact that blocks are separated by {} in Reason: big TODO here.
+;; Phrase navigation for utop maybe other REPLs.
+
+;; The utop compatibility layer for Reason was mainly taken from:
+;; https://github.com/ocaml/tuareg/blob/master/tuareg-light.el (big thanks!)
+
+;;; Code:
 
 (defun reason-backward-char (&optional step)
   "Go back one char.
@@ -208,3 +211,5 @@ phrease cannot be found."
              (reason-next-phrase)))))
 
 (provide 'reason-interaction)
+
+;;; reason-interaction.el ends here
