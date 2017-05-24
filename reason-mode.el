@@ -120,26 +120,24 @@
 (defun regexp-opt-symbols (words) (concat "\\_<" (regexp-opt words t) "\\_>"))
 
 ;;; Syntax highlighting for Reason
-(setq reason-font-lock-keywords
-      `(
-        (,(regexp-opt-symbols reason-mode-keywords) . font-lock-keyword-face)
-        (,(regexp-opt-symbols reason-special-types) . font-lock-builtin-face)
-        (,(regexp-opt-symbols reason-mode-consts) . font-lock-constant-face)
+(defvar reason-font-lock-keywords
+  `((,(regexp-opt-symbols reason-mode-keywords) . font-lock-keyword-face)
+    (,(regexp-opt-symbols reason-special-types) . font-lock-builtin-face)
+    (,(regexp-opt-symbols reason-mode-consts) . font-lock-constant-face)
 
-        (,reason-camel-case 1 font-lock-type-face)
+    (,reason-camel-case 1 font-lock-type-face)
 
-        ;; Field names like `foo:`, highlight excluding the :
-        (,(concat (reason-re-grab reason-re-ident) ":[^:]") 1 font-lock-variable-name-face)
-        ;; Module names like `foo::`, highlight including the ::
-        (,(reason-re-grab (concat reason-re-ident "::")) 1 font-lock-type-face)
-        ;; Name punned labeled args like ::foo
-        (,(concat "[[:space:]]+" (reason-re-grab (concat "::" reason-re-ident))) 1 font-lock-type-face)
+    ;; Field names like `foo:`, highlight excluding the :
+    (,(concat (reason-re-grab reason-re-ident) ":[^:]") 1 font-lock-variable-name-face)
+    ;; Module names like `foo::`, highlight including the ::
+    (,(reason-re-grab (concat reason-re-ident "::")) 1 font-lock-type-face)
+    ;; Name punned labeled args like ::foo
+    (,(concat "[[:space:]]+" (reason-re-grab (concat "::" reason-re-ident))) 1 font-lock-type-face)
 
-        ;; TODO jsx attribs?
-        (,
-         (concat "<[/]?" (reason-re-grab reason-re-ident) "[^>]*" ">")
-         1 font-lock-type-face)
-        ))
+    ;; TODO jsx attribs?
+    (,
+     (concat "<[/]?" (reason-re-grab reason-re-ident) "[^>]*" ">")
+     1 font-lock-type-face)))
 
 (defun reason-mode-try-find-alternate-file (mod-name extension)
   "Switch to the file given by MOD-NAME and EXTENSION."
