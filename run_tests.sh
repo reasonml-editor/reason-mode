@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # Copyright 2014 The Rust Project Developers. See the COPYRIGHT
 # file at the top-level directory of this distribution and at
 # http://rust-lang.org/COPYRIGHT.
@@ -32,14 +32,22 @@ $( $EMACS -batch --eval "(require 'ert)" > /dev/null 2>&1 ) || {
     exit 3
 };
 
-warnings="$( $EMACS -Q -batch -l refmt.el -f batch-byte-compile reason-mode.el 2>&1 | grep -v '^Wrote ' )"
-if [ -n "$warnings" ]; then
+# All the files reason-mode depends on (in dependency order!)
+DEPS_INCLUDES="-l refmt.el -l reason-indent.el -l reason-interaction.el"
+
+rm *.elc
+WARNINGS="$($EMACS -Q -batch $DEPS_INCLUDES -f batch-byte-compile reason-mode.el 2>&1 | grep -v '^Wrote ')"
+if [ -n "$WARNINGS" ]; then
     echo "Byte-compilation failed:"
-    echo "$warnings"
+    # echo "$WARNINGS"
     exit 4
 else
+    rm *.elc
     echo "Byte-compilation passed."
 fi
 
-TEST_INCLUDES=$(ls test/*.el | sed -e 's/^/-l /')
-$EMACS -batch -l ert -l refmt.el -l reason-mode.el $TEST_INCLUDES -f ert-run-tests-batch-and-exit
+TEST_INCLUDES=$(ls test/*.el | sed -e 's/^/-l /' | xargs)
+
+# Note that the order of the -l counts, reason-mode.el goes before the test
+# .el files.
+$EMACS -batch -l ert $DEPS_INCLUDES -l reason-mode.el $TEST_INCLUDES -f ert-run-tests-batch-and-exit
