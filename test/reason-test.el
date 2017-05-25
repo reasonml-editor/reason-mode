@@ -1,6 +1,12 @@
 ;;; reason-mode-tests.el --- ERT tests for reason-mode.el
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
+;;; Commentary:
+
+;; Tests for reason-mode.
+
+;;; Code:
+
 (message "Running tests on Emacs %s" emacs-version)
 
 (require 'ert-x)
@@ -19,7 +25,7 @@
      ;; The (goto-char) and (insert) business here is just for
      ;; convenience--after an error, you can copy-paste that into emacs eval to
      ;; insert the bare strings into a buffer
-     "Rust code was manipulated wrong after:"
+     "Reason code was manipulated wrong after:"
      `(insert ,original)
      `(goto-char ,point-pos)
      'expected `(insert ,expected)
@@ -60,12 +66,12 @@
 (ert-deftest indent-struct-fields-aligned ()
   (test-indent
    "
-type Foo { bar: int,
+type foo { bar: int,
            baz: int};
 
-type Blah {x:int,
+type blah {x:int,
            y:int,
-           z:String};"))
+           z:string};"))
 
 ;; Reason will also eventually support line comments, which are not supported in OCaml.
 ;; (ert-deftest indent-inside-braces ()
@@ -92,29 +98,6 @@ let score = 10;
 let newScore = 10 + score;
 "))
 
-(ert-deftest font-lock-multi-raw-strings-in-a-row ()
-  (reason-test-font-lock
-   "
-r\"foo\\\", \"bar\", r\"bar\";
-r\"foo\\.\", \"bar\", r\"bar\";
-r\"foo\\..\", \"bar\", r\"foo\\..\\bar\";
-r\"\\\", \"foo\", r\"\\foo\";
-not_a_string();
-
-"
-
-   (apply 'append (mapcar (lambda (s) (list s 'font-lock-string-face))
-                          '("r\"foo\\\"" "\"bar\"" "r\"bar\""
-                            "r\"foo\\.\"" "\"bar\"" "r\"bar\""
-                            "r\"foo\\..\"" "\"bar\"" "r\"foo\\..\\bar\""
-                            "r\"\\\"" "\"foo\"" "r\"\\foo\"")))
-   ))
-
-(ert-deftest font-lock-raw-string-after-normal-string-ending-in-r ()
-  (reason-test-font-lock
-   "\"bar\" r\"foo\""
-   '("\"bar\"" font-lock-string-face "r\"foo\"" font-lock-string-face)))
-
 ;; TODO how to align these
 (ert-deftest indent-params-no-align ()
   (test-indent
@@ -122,50 +105,73 @@ not_a_string();
 /* Indent out one level because no params appear on the first line */
 fun xyzzy(
   a:int,
-  b:char) { };
+  b:char) => {};
 
 fun abcdef(
   a:int,
   b:char)
-  -> char
-  { };
+  :int =>
+  { 1 };
 "))
 
-(ert-deftest indent-params-align ()
+(ert-deftest indent-params-align1 ()
   (test-indent
    "
 /* Align the second line of params to the first */
 fun foo(a:int,
-        b:char) { };
-
-fun bar(   a:int,
-           b:char)
-           -> int
-  { };
-
-fun baz(   a:int,  /* should work with a comment here */
-           b:char)
-           -> int
-  { };
+        b:char) => {};
 "))
 
-(ert-deftest indent-open-after-arrow ()
+(ert-deftest indent-params-align2 ()
+  (test-indent
+   "
+/* Align the second line of params to the first */
+fun foo2(   a:int,
+            b:char)
+            :int =>
+  { 1 };
+"))
+
+(ert-deftest indent-params-align3 ()
+  (test-indent
+   "
+/* Align the second line of params to the first */
+fun foo3(   a:int,  /* should work with a comment here */
+            b:char)
+            :int =>
+  { 1 };
+"))
+
+(ert-deftest indent-open-after-arrow1 ()
   (test-indent
    "
 /* Indent function body only one level after `=> {` */
-fun foo1(a:int, b:char) : int => {
-  let body;
+fun foo1(a:int) (b:char) :int => {
+  let body = \"hello\";
+  1
 };
+"))
 
-fun foo2(a:int,
-         b:char) => int {
-  let body;
+(ert-deftest indent-open-after-arrow2 ()
+  (test-indent
+   "
+/* Indent function body only one level after `=> {` */
+fun foo2 (a:int)
+         (b:char) :int => {
+  let body = \"hello\";
+  1
 };
+"))
 
+(ert-deftest indent-open-after-arrow3 ()
+  (test-indent
+   "
+/* Indent function body only one level after `=> {` */
 fun foo3(a:int,
          b:char)
-  => int {
-    let body;
+         :int => {
+    let body = \"hello\";
+    1
   };
 "))
 
@@ -187,21 +193,6 @@ fun args_on_the_next_line( /* with a comment */
 "))
 
 ;; TODO fix alignment of curly braces when down a line
-(ert-deftest indent-nested-funs ()
-  (test-indent
-   "
-fun nexted_funs(a: fun(b:int,
-                       c:char)
-                => int,
-                d: int)
-  => uint
-  {
-    0
-  };
-"
-   ))
-
-;; TODO fix alignment of curly braces when down a line
 (ert-deftest indent-multi-line-expr ()
   (test-indent
    "
@@ -218,8 +209,8 @@ fun foo() =>
    "
 fun foo() => {
   switch blah {
-    | Pattern => stuff(),
-    | _ => whatever
+  | Pattern => stuff()
+  | _ => whatever
   }
 };
 "
@@ -230,13 +221,25 @@ fun foo() => {
    "
 fun foo() => {
   switch blah {
-    | Pattern => \"dada\"
-    | Pattern2 => {
-        hello()
-      }
-    | _ => \"whatever\"
+  | Pattern => \"dada\"
+  | Pattern2 => {
+      hello()
+    }
+  | _ => \"whatever\"
   }
 };
+"))
+
+(ert-deftest indent-normal-switch ()
+  (test-indent
+   "
+let hasExactlyTwoCars lst =>
+  switch lst {
+  | NoMore => false                              /* 0 */
+  | List p NoMore => false                       /* 1 */
+  | List p (List p2 NoMore) => true              /* 2 */
+  | List p (List p2 (List p3 theRest)) => false  /* 3+ */
+  };
 "))
 
 ;; TODO maybe fix the indentation of y(); below
@@ -246,11 +249,11 @@ fun foo() => {
 fun foo() => {
   let x = {
     switch blah {
-      | Pattern => \"dada\"
-      | Pattern2 => {
-          hello()
-        }
-      | _ => \"whatever\"
+    | Pattern => \"dada\"
+    | Pattern2 => {
+        hello()
+      }
+    | _ => \"whatever\"
     }
   }
     y();
@@ -273,9 +276,9 @@ fun foo() => {
   (test-indent
    "
 fun foo() => {
-  { bar('}'); }
-    { bar(']'); }
-    { bar(')'); }
+  bar('}');
+  bar(']');
+  bar(')');
 };
 "))
 
@@ -362,50 +365,6 @@ list of substrings of `STR' each followed by its face."
      "let" font-lock-keyword-face
      "'\\\\'" font-lock-string-face)))
 
-(ert-deftest font-lock-raw-strings-no-hashes ()
-  (reason-test-font-lock
-   "r\"No hashes\";"
-   '("r\"No hashes\"" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-strings-double-quote ()
-  (reason-test-font-lock
-   "fun main() => {
-    r#\"With a double quote (\")\"#;
-}
-"
-   '("fun" font-lock-keyword-face
-     "r#\"With a double quote (\")\"#" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-strings-two-hashes ()
-  (reason-test-font-lock
-   "r##\"With two hashes\"##;"
-   '("r##\"With two hashes\"##" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-strings-backslash-at-end ()
-  (reason-test-font-lock
-   "r\"With a backslash at the end\\\";"
-   '("r\"With a backslash at the end\\\"" font-lock-string-face)))
-
-(ert-deftest font-lock-two-raw-strings ()
-  (reason-test-font-lock
-   "fun main() => {
-    r\"With a backslash at the end\\\";
-    r##\"With two hashes\"##;
-}"
-   '("fun" font-lock-keyword-face
-     "r\"With a backslash at the end\\\"" font-lock-string-face
-     "r##\"With two hashes\"##" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-string-with-inner-hash ()
-  (reason-test-font-lock
-   "r##\"I've got an octothorpe (#)\"##; foo()"
-   '("r##\"I've got an octothorpe (#)\"##" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-string-with-inner-quote-and-hash ()
-  (reason-test-font-lock
-   "not_the_string(); r##\"string \"# still same string\"##; not_the_string()"
-   '("r##\"string \"# still same string\"##" font-lock-string-face)))
-
 (ert-deftest font-lock-string-ending-with-r-not-raw-string ()
   (reason-test-font-lock
    "fun f() => {
@@ -420,58 +379,6 @@ fun g() {
      "fun" font-lock-keyword-face
      "\"xs\"" font-lock-string-face)))
 
-(ert-deftest font-lock-raw-string-trick-ending-followed-by-string-with-quote ()
-  (reason-test-font-lock
-   "r\"With what looks like the start of a raw string at the end r#\";
-not_a_string();
-r##\"With \"embedded\" quote \"##;"
-   '("r\"With what looks like the start of a raw string at the end r#\"" font-lock-string-face
-     "r##\"With \"embedded\" quote \"##" font-lock-string-face)))
-
-(ert-deftest font-lock-raw-string-starter-inside-raw-string ()
-  ;; Check that it won't look for a raw string beginning inside another raw string.
-  (reason-test-font-lock
-   "r#\"In the first string r\" in the first string \"#;
-not_in_a_string();
-r##\"In the second string\"##;"
-   '("r#\"In the first string r\" in the first string \"#" font-lock-string-face
-     "r##\"In the second string\"##" font-lock-string-face)))
-
-(ert-deftest font-lock-runaway-raw-string ()
-  (reason-test-font-lock
-   "let Z = r#\"my raw string\";\n// oops this is still in the string"
-   '("let" font-lock-keyword-face
-     "Z" font-lock-type-face
-     "r#\"my raw string\";\n// oops this is still in the string" font-lock-string-face))
-  )
-
-(ert-deftest font-lock-recognize-closing-raw-string ()
-  (with-temp-buffer
-    (reason-mode)
-    (insert "let foo = r##\"
-1...............................................50
-1...............................................50
-1...............................................50
-1...............195-=>\"; let ...................50
-1...............................................50
-1...............................................50
-1...............................................50
-1...............................................50
-1...............................................50
-1......................500......................50
-\"#;
-")
-    (font-lock-fontify-buffer)
-    (goto-char 530)
-    (insert "#")
-    ;; We have now closed the raw string.  Check that the whole string is
-    ;; recognized after the change
-    (font-lock-after-change-function (1- (point)) (point) 0)
-    (should (equal 'font-lock-string-face (get-text-property 195 'face))) ;; The "let"
-    (should (equal 'font-lock-string-face (get-text-property 500 'face))) ;; The "500"
-    (should (equal nil (get-text-property 531 'face))) ;; The second ";"
-    ))
-
 (ert-deftest reason-test-two-character-quotes-in-a-row ()
   (with-temp-buffer
     (reason-mode)
@@ -483,9 +390,7 @@ r##\"In the second string\"##;"
     (should (equal nil (get-text-property 5 'face)))
     (should (equal 'font-lock-string-face (get-text-property 7 'face)))
     (should (equal nil (get-text-property 9 'face)))
-    (should (equal 'font-lock-keyword-face (get-text-property 12 'face)))
-    )
-  )
+    (should (equal 'font-lock-keyword-face (get-text-property 12 'face)))))
 
 (ert-deftest single-quote-null-char ()
   (reason-test-font-lock
@@ -499,11 +404,4 @@ r##\"In the second string\"##;"
    "'\"';\n\"r\";\n\"oops\";"
    '("'\"'" font-lock-string-face
      "\"r\"" font-lock-string-face
-     "\"oops\"" font-lock-string-face
-     )))
-
-(ert-deftest char-literal-after-quote-in-raw-string ()
-  (reason-test-font-lock
-   "r#\"\"\"#;\n'q'"
-   '("r#\"\"\"#" font-lock-string-face
-     "'q'" font-lock-string-face)))
+     "\"oops\"" font-lock-string-face)))
