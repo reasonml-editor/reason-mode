@@ -3,7 +3,7 @@
 
 ;; Version: 0.4.0
 ;; Author: Mozilla
-;; Url: https://github.com/arichiardi/reason-mode
+;; Url: https://github.com/reasonml-editor/reason-mode
 ;; Keywords: languages, ocaml
 ;; Package-Requires: ((emacs "24.0"))
 
