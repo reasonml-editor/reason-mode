@@ -5,7 +5,7 @@ At the moment this plugin is not deployed on Elpa. The sections below explains h
 Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the following recipe:
 
 ```lisp
-(quelpa '(reason-mode :repo "arichiardi/reason-mode" :fetcher github :stable t))
+(quelpa '(reason-mode :repo "reasonml-editor/reason-mode" :fetcher github :stable t))
 ```
 
 ### Manual Installation
@@ -86,7 +86,7 @@ dotspacemacs-additional-packages
   '(
     (reason-mode
       :location (recipe
-        :repo "arichiardi/reason-mode"
+        :repo "reasonml-editor/reason-mode"
         :fetcher github
         :files ("reason-mode.el" "refmt.el")))
 )
