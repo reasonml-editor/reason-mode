@@ -10,8 +10,14 @@ Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the fo
 
 ### Manual Installation
 
-To install manually, install the reason-cli (`npm -g install git://github.com/reasonml/reason-cli.git`) and add this to your
-`.emacs` file:
+Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refmt.el` at the root of this repository and place it in a `vendor` file next to your Emacs configuration files. Then place the following somewhere in you `.emacs.el`:
+
+```lisp
+(add-to-list 'load-path "/path/to/vendor")
+```
+
+To install manually, install the reason-cli (`npm -g install git://github.com/reasonml/reason-cli.git`) and add the 
+following to your `.emacs` file:
 
 ```lisp
 ;;----------------------------------------------------------------------------
@@ -26,15 +32,14 @@ To install manually, install the reason-cli (`npm -g install git://github.com/re
                             ""
                             str))
 
-(let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
-      (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
+(let* ((refmt-bin (chomp-end (shell-command-to-string "refmt ----where")))
+       (merlin-bin (chomp-end (shell-command-to-string "ocamlmerlin ----where")))
+       (merlin-base-dir (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin)))
   ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
-  (add-to-list 'load-path (concat merlin-base-dir "/share/emacs/site-lisp/"))
-  (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin"))
+  (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
+  (setq merlin-command merlin-bin)
 
-  ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
-  (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
-  (setq refmt-command (concat support-base-dir "/bin/refmt")))
+  (setq refmt-command refmt-bin))
 
 (require 'reason-mode)
 (require 'merlin)
