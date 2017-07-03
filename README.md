@@ -32,14 +32,29 @@ following to your `.emacs` file:
                             ""
                             str))
 
-(let* ((refmt-bin (chomp-end (shell-command-to-string "refmt ----where")))
-       (merlin-bin (chomp-end (shell-command-to-string "ocamlmerlin ----where")))
-       (merlin-base-dir (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin)))
-  ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
-  (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
-  (setq merlin-command merlin-bin)
+(defun shell-cmd (cmd)
+  "Returns the stdout output of a shell command or nil if the command returned
+   an error"
+  (let ((stdoutput (chomp-end
+                    (with-output-to-string
+                      (with-current-buffer
+                          standard-output
+                        (process-file shell-file-name nil
+                                      '(t nil)  nil
+                                      shell-command-switch cmd))))))
+    (when (not (= (length stdoutput) 0))
+      stdoutput)))
 
-  (setq refmt-command refmt-bin))
+(let* ((refmt-bin (shell-cmd "refmt ----where"))
+       (merlin-bin (shell-cmd "ocamlmerlin ----where"))
+       (merlin-base-dir (when merlin-bin (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin))))
+  ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
+  (when merlin-bin
+    (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
+    (setq merlin-command merlin-bin))
+
+  (when refmt-bin
+    (setq refmt-command refmt-bin)))
 
 (require 'reason-mode)
 (require 'merlin)
