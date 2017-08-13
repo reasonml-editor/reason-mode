@@ -161,11 +161,28 @@
          (t
           (reason-mode-try-find-alternate-file mod-name ".rei")))))))
 
+(defun reason--syntax-propertize-multiline-string (end)
+  (let ((ppss (syntax-ppss)))
+    (when (eq t (nth 3 ppss))
+      (let ((key (save-excursion
+                   (goto-char (nth 8 ppss))
+                   (and (looking-at "{\\([a-z]*\\)|")
+                        (match-string 1)))))
+        (when (search-forward (format "|%s}" key) end 'move)
+          (put-text-property (1- (match-end 0)) (match-end 0)
+                             'syntax-table (string-to-syntax "|")))))))
+
 (defun reason-syntax-propertize-function (start end)
   (goto-char start)
+  (reason--syntax-propertize-multiline-string end)
   (funcall
    (syntax-propertize-rules
-    (reason--char-literal-rx (1 "\"") (2 "\"")))
+    (reason--char-literal-rx (1 "\"") (2 "\""))
+    ;; multi line strings
+    ("\\({\\)[a-z]*|"
+     (1 (prog1 "|"
+          (goto-char (match-end 0))
+          (reason--syntax-propertize-multiline-string end)))))
    (point) end))
 
 (defalias 'reason-parent-mode
