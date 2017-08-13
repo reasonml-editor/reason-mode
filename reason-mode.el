@@ -53,7 +53,7 @@
     ;; Strings
     (modify-syntax-entry ?\" "\"" table)
     (modify-syntax-entry ?\\ "\\" table)
-    (modify-syntax-entry ?\' "\"'"  table)
+    (modify-syntax-entry ?\' "_"  table)
 
     ;; Comments
     (modify-syntax-entry ?/  ". 124b" table)
@@ -105,6 +105,13 @@
       symbol-end))
 
 (defconst reason-re-ident "[[:word:][:multibyte:]_][[:word:][:multibyte:]_[:digit:]]*")
+
+(defconst reason--char-literal-rx
+  (rx (seq (group "'")
+           (or (seq "\\" anything)
+               (not (any "'\\")))
+           (group "'"))))
+
 (defun reason-re-word (inner) (concat "\\<" inner "\\>"))
 (defun reason-re-grab (inner) (concat "\\(" inner "\\)"))
 
@@ -154,10 +161,15 @@
          (t
           (reason-mode-try-find-alternate-file mod-name ".rei")))))))
 
+(defun reason-syntax-propertize-function (start end)
+  (goto-char start)
+  (funcall
+   (syntax-propertize-rules
+    (reason--char-literal-rx (1 "\"") (2 "\"")))
+   (point) end))
 
 (defalias 'reason-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
-
 
 ;;;###autoload
 (define-derived-mode reason-mode reason-parent-mode "Reason"
@@ -167,6 +179,8 @@
   :group 'reason-mode
   :syntax-table reason-mode-syntax-table
 
+  ;; Syntax
+  (setq-local syntax-propertize-function #'reason-syntax-propertize-function)
   ;; Indentation
   (setq-local indent-line-function 'reason-mode-indent-line)
   ;; Fonts
