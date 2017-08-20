@@ -16,14 +16,13 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 (add-to-list 'load-path "/path/to/vendor")
 ```
 
-To install manually, install the reason-cli (`npm -g install git://github.com/reasonml/reason-cli.git`) and add the 
-following to your `.emacs` file:
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by either installing `reason-cli` from NPM (`npm -g install git://github.com/reasonml/reason-cli.git`), which ships all executables needed to run Reason, or from OPAM (`opam install reason.1.13.7 merlin`).
+
+Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
 
 ```lisp
 ;;----------------------------------------------------------------------------
 ;; Reason setup
-;; Expects reason-cli to be installed:
-;; npm install -g git://github.com/reasonml/reason-cli.git
 ;;----------------------------------------------------------------------------
 
 (defun chomp-end (str)
