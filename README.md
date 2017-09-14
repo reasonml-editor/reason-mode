@@ -16,7 +16,7 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 (add-to-list 'load-path "/path/to/vendor")
 ```
 
-**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by either [installing `reason-cli`](https://github.com/reasonml/reason-cli#1-choose-your-platform) which ships all executables needed to run Reason, or from OPAM (`opam install reason.1.13.7 merlin`).
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason.1.13.7 merlin`).
 
 Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
 
