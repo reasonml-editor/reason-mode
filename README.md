@@ -16,7 +16,15 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 (add-to-list 'load-path "/path/to/vendor")
 ```
 
-**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason.1.13.7 merlin`).
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason.1.13.7 merlin.2.5.4`). Make sure you're on ocaml 4.02.3!
+
+**Please verify your installation**:
+
+```sh
+ocamlc -version # 4.02.3
+which ocamlmerlin # a path with the word `.opam` in it, mandatorily
+```
+
 
 Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
 
