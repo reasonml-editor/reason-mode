@@ -10,7 +10,7 @@ Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the fo
 
 ### Manual Installation
 
-Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refmt.el` at the root of this repository and place it in a `vendor` file next to your Emacs configuration files. Then place the following somewhere in you `.emacs.el`:
+Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refmt.el` at the root of this repository and place it in a `vendor` file next to your Emacs configuration files. Then place the following somewhere in your `.emacs.el`:
 
 ```lisp
 (add-to-list 'load-path "/path/to/vendor")
@@ -44,7 +44,7 @@ Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
                        (shell-cmd "which ocamlmerlin")))
        (merlin-base-dir (when merlin-bin
                           (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin))))
-  ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
+  ;; Add npm merlin.el to the emacs load path and tell emacs where to find merlin
   (when merlin-bin
     (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
     (setq merlin-command merlin-bin))
