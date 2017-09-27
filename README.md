@@ -10,7 +10,7 @@ Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the fo
 
 ### Manual Installation
 
-Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refmt.el` at the root of this repository and place it in a `vendor` file next to your Emacs configuration files. Then place the following somewhere in you `.emacs.el`:
+Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refmt.el` at the root of this repository and place it in a `vendor` file next to your Emacs configuration files. Then place the following somewhere in your `.emacs.el`:
 
 ```lisp
 (add-to-list 'load-path "/path/to/vendor")
