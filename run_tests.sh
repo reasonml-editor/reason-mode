@@ -10,7 +10,7 @@
 # option. This file may not be copied, modified, or distributed
 # except according to those terms.
 #
-# This runs the test for emacs rust-mode.
+# This runs the test for emacs reason-mode.
 # Either $EMACS must be set, or it must be possible to find emacs via PATH.
 
 if [ -z "$EMACS" ]; then
