@@ -32,6 +32,8 @@
 ;;; Commentary:
 ;;
 
+(require 'cl-lib)
+
 ;;; Code:
 
 (defcustom refmt-command "refmt"
@@ -126,14 +128,14 @@ function."
                 (forward-line len)
                 (let ((text (buffer-substring start (point))))
                   (with-current-buffer target-buffer
-                    (decf line-offset len)
+                    (cl-decf line-offset len)
                     (goto-char (point-min))
                     (forward-line (- from len line-offset))
                     (insert text)))))
              ((equal action "d")
               (with-current-buffer target-buffer
                 (reason--goto-line (- from line-offset))
-                (incf line-offset len)
+                (cl-incf line-offset len)
                 (reason--delete-whole-line len)))
              (t
               (error "invalid rcs patch or internal error in reason--apply-rcs-patch")))))))))

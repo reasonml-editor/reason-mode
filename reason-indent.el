@@ -43,10 +43,9 @@
         (backward-word 1))
       (current-column))))
 
-
 ;;; Start of a reason binding
 (defvar reason-binding
-  (regexp-opt '("let" "type")))
+  (regexp-opt '("let" "type" "module")))
 
 (defun reason-beginning-of-defun (&optional arg)
   "Move backward to the beginning of the current defun.
@@ -85,7 +84,6 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
     ;; There is no opening brace, so consider the whole buffer to be one "defun"
     (goto-char (point-max))))
 
-
 (defun reason-rewind-to-beginning-of-current-level-expr ()
   (interactive)
   (let ((current-level (reason-paren-level)))
@@ -115,8 +113,6 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                      (= current-level function-level)))
         (goto-char function-start)))))
 
-
-
 (defun reason-mode-indent-line ()
   (interactive)
   (let ((indent
@@ -134,19 +130,23 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                        0
                       (save-excursion
                         (reason-rewind-irrelevant)
-                        ;; (backward-up-list)
+                        (backward-up-list)
                         (reason-rewind-to-beginning-of-current-level-expr)
 
-                        (if (or (looking-at "|") (looking-at "switch"))
-                            (current-column)
-                          (+ (current-column) reason-indent-offset))
+                        (cond
+                         ((looking-at "|")
+                          (+ (current-column) (* reason-indent-offset 2)))
 
-                        ))))
+                         ((looking-at "switch")
+                          (current-column))
+
+                         (t
+                          (+ (current-column) reason-indent-offset)))))))
              (cond
               ;; A function return type is indented to the corresponding function arguments
-              ((looking-at "->")
+              ((looking-at "=>")
                (save-excursion
-                 (backward-list)
+                 ;; (backward-list)
                  (or (reason-align-to-expr-after-brace)
                      (+ baseline reason-indent-offset))))
 
@@ -230,7 +230,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
 
                 (progn
                   (back-to-indentation)
-                  (cond ((looking-at (regexp-opt '("constraint" "and" "type")))
+                  (cond ((looking-at (regexp-opt '("and" "type")))
                          baseline)
                         ((save-excursion
                          (reason-rewind-irrelevant)
@@ -240,8 +240,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                            (while (looking-at "|")
                              (reason-rewind-irrelevant)
                              (back-to-indentation))
-                           (looking-at (regexp-opt '("type")))
-                           )
+                           (looking-at (regexp-opt '("type"))))
                          (+ baseline reason-indent-offset))
                         ((looking-at "|\\|/[/*]")
                          baseline)
@@ -250,9 +249,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                          (looking-back "[{;,\\[(]" (- (point) 2)))
                          baseline)
                         (t
-                         (+ baseline reason-indent-offset)
-                         )
-                        )
+                         (+ baseline reason-indent-offset)))
                   ;; Point is now at the beginning of the current line
                   ))))))))
 
