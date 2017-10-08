@@ -218,6 +218,13 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                          (+ baseline reason-indent-offset))
                         ((looking-at "|\\|/[/*]")
                          baseline)
+                        ((and (> level 0)
+                              (save-excursion
+                                (reason-rewind-irrelevant)
+                                (backward-up-list)
+                                (reason-rewind-to-beginning-of-current-level-expr)
+                                (looking-at "switch")))
+                         (+ baseline reason-indent-offset))
                         ((save-excursion
                            (reason-rewind-irrelevant)
                            (looking-back "[{;,\\[(]" (- (point) 2)))

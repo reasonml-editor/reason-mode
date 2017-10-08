@@ -242,7 +242,6 @@ let hasExactlyTwoCars lst =>
   };
 "))
 
-;; TODO maybe fix the indentation of y(); below
 (ert-deftest indent-indented-switch ()
   (test-indent
    "
@@ -255,8 +254,25 @@ fun foo() => {
       }
     | _ => \"whatever\"
     }
-  }
-    y();
+  };
+  y();
+};
+"))
+
+(ert-deftest indented-multi-expr-switch ()
+  (test-indent
+   "
+fun foo() => {
+  let x = {
+    switch blah {
+    | Pattern => \"dada\"
+    | Pattern2 =>
+      hello();
+      other();
+    | _ => \"whatever\"
+    }
+  };
+  y();
 };
 "))
 
