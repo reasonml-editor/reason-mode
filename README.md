@@ -1,5 +1,7 @@
-`reason-mode`: A major Emacs mode for Reason syntax
-============================================================
+# reason-mode
+![Build Status](https://travis-ci.org/reasonml-editor/reason-mode.svg?branch=master)
+
+An Emacs major mode for [ReasonML](https://reasonml.github.io/).
 
 At the moment this plugin is not deployed on Elpa. The sections below explains how to manually install it.
 Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the following recipe:
@@ -61,7 +63,7 @@ Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
 (setq merlin-ac-setup t)
 ```
 
-If you have iedit mode set up: 
+If you have iedit mode set up:
 
 ```lisp
 (require 'merlin-iedit)
@@ -95,7 +97,7 @@ After this, the function `utop` (`C-c C-s`) will start `rtop` in Reason buffers.
 ### Spacemacs
 
 There is currently no offical reason layer available, but you can install the `reason-mode` package automatically.
-Some are working on a layer in the meantime [#1149](https://github.com/facebook/reason/issues/1149). 
+Some are working on a layer in the meantime [#1149](https://github.com/facebook/reason/issues/1149).
 
 ```lisp
 dotspacemacs-additional-packages
