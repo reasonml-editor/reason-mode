@@ -32,8 +32,6 @@
 ;;; Commentary:
 ;;
 
-(require 'cl-lib)
-
 ;;; Code:
 
 (require 'cl-lib)
