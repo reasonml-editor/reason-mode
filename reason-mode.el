@@ -182,6 +182,12 @@
           (reason--syntax-propertize-multiline-string end)))))
    (point) end))
 
+(defvar reason-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-r" #'refmt-region-ocaml-to-reason)
+    (define-key map "\C-c\C-o" #'refmt-region-reason-to-ocaml)
+    map))
+
 (defalias 'reason-parent-mode
   (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
 
@@ -192,6 +198,7 @@
 \\{reason-mode-map}"
   :group 'reason-mode
   :syntax-table reason-mode-syntax-table
+  :keymap reason-mode-map
 
   ;; Syntax
   (setq-local syntax-propertize-function #'reason-syntax-propertize-function)
@@ -214,8 +221,7 @@
 
   (setq-local beginning-of-defun-function 'reason-beginning-of-defun)
   (setq-local end-of-defun-function 'reason-end-of-defun)
-  (setq-local parse-sexp-lookup-properties t)
-  )
+  (setq-local parse-sexp-lookup-properties t))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.rei?\\'" . reason-mode))

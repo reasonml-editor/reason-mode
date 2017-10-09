@@ -98,9 +98,11 @@ function."
            (delete-region (progn (forward-visible-line 0) (point))
                                                   (progn (forward-visible-line arg) (point))))))
 
-(defun reason--apply-rcs-patch (patch-buffer)
+(defun reason--apply-rcs-patch (patch-buffer &optional start-pos)
   "Apply an RCS-formatted diff from PATCH-BUFFER to the current buffer."
-  (let ((target-buffer (current-buffer))
+  (setq start-pos (or start-pos (point-min)))
+  (let ((first-line (line-number-at-pos start-pos))
+        (target-buffer (current-buffer))
         ;; Relative offset between buffer line numbers and line numbers
         ;; in patch.
         ;;
@@ -129,12 +131,12 @@ function."
                 (let ((text (buffer-substring start (point))))
                   (with-current-buffer target-buffer
                     (cl-decf line-offset len)
-                    (goto-char (point-min))
+                    (goto-char start-pos)
                     (forward-line (- from len line-offset))
                     (insert text)))))
              ((equal action "d")
               (with-current-buffer target-buffer
-                (reason--goto-line (- from line-offset))
+                (reason--goto-line (- (1- (+ first-line from)) line-offset))
                 (cl-incf line-offset len)
                 (reason--delete-whole-line len)))
              (t
@@ -163,9 +165,11 @@ function."
         (erase-buffer))
       (kill-buffer errbuf))))
 
-(defun refmt ()
-   "Format the current buffer according to the refmt tool."
-   (interactive)
+(defun apply-refmt (&optional start end from to)
+  (setq start (or start (point-min))
+        end (or end (point-max))
+        from (or from "re")
+        to (or to "re"))
    (let* ((ext (file-name-extension buffer-file-name t))
           (bufferfile (make-temp-file "refmt" nil ext))
           (outputfile (make-temp-file "refmt" nil ext))
@@ -185,7 +189,7 @@ function."
      (unwind-protect
          (save-restriction
            (widen)
-           (write-region nil nil bufferfile)
+           (write-region start end bufferfile)
            (if errbuf
                (with-current-buffer errbuf
                  (setq buffer-read-only nil)
@@ -194,11 +198,11 @@ function."
              (erase-buffer))
            (if (zerop (apply 'call-process
                              refmt-command nil (list (list :file outputfile) errorfile)
-                             nil (append width-args (list "--parse" "re" "--print" "re" bufferfile))))
+                             nil (append width-args (list "--parse" from "--print" to bufferfile))))
                (progn
-                 (call-process-region (point-min) (point-max) "diff" nil patchbuf nil "-n" "-"
+                 (call-process-region start end "diff" nil patchbuf nil "-n" "-"
                                       outputfile)
-                 (reason--apply-rcs-patch patchbuf)
+                 (reason--apply-rcs-patch patchbuf start)
                  (message "Applied refmt")
                  (if errbuf (refmt--kill-error-buffer errbuf)))
              (message "Could not apply refmt")
@@ -208,6 +212,19 @@ function."
      (delete-file errorfile)
      (delete-file bufferfile)
      (delete-file outputfile)))
+
+(defun refmt ()
+  "Format the current buffer according to the refmt tool."
+  (interactive)
+  (apply-refmt))
+
+(defun refmt-region-ocaml-to-reason (start end)
+  (interactive "r")
+  (apply-refmt start end "ml"))
+
+(defun refmt-region-reason-to-ocaml (start end)
+  (interactive "r")
+  (apply-refmt start end "re" "ml"))
 
 (provide 'refmt)
 
