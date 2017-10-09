@@ -184,6 +184,7 @@
 
 (defvar reason-mode-map
   (let ((map (make-sparse-keymap)))
+    (define-key map "\C-c\C-a" #'reason-mode-find-alternate-file)
     (define-key map "\C-c\C-r" #'refmt-region-ocaml-to-reason)
     (define-key map "\C-c\C-o" #'refmt-region-reason-to-ocaml)
     map))
@@ -237,5 +238,3 @@
 (provide 'reason-mode)
 
 ;;; reason-mode.el ends here
-
-;;; TODO: keymaps, e.g. (define-key map "\C-c\C-a" 'reason-mode-find-alternate-file)
