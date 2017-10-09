@@ -1,4 +1,5 @@
-;;; reason-mode.el --- A major emacs mode for editing Reason (based on rust-mode) -*-lexical-binding: t-*-
+;;; reason-indent.el --- Indentation functions for ReasonML -*-lexical-binding: t-*-
+
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
 ;;; Commentary:

@@ -1,9 +1,10 @@
-;;; reason-mode.el --- A major emacs mode for editing Reason (based on rust-mode) -*-lexical-binding: t-*-
+;;; reason-interaction.el --- Phrase navitagion for rtop -*-lexical-binding: t-*-
+
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
 ;;; Commentary:
 
-;; Phrase navigation for utop maybe other REPLs.
+;; Phrase navigation for utop and maybe other REPLs.
 
 ;; The utop compatibility layer for Reason was mainly taken from:
 ;; https://github.com/ocaml/tuareg/blob/master/tuareg-light.el (big thanks!)
@@ -16,7 +17,7 @@ Similar to `backward-char` but it does not signal errors
 `beginning-of-buffer` and `end-of-buffer`.  It optionally takes a
 STEP parameter for jumping back more than one character."
   (when step (goto-char (- (point) step))
-    (goto-char (1- (point)))))
+        (goto-char (1- (point)))))
 
 (defun reason-forward-char (&optional step)
   "Go forward one char.

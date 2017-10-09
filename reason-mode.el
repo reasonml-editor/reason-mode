@@ -1,4 +1,4 @@
-;;; reason-mode.el --- A major emacs mode for editing Reason (based on rust-mode) -*-lexical-binding: t-*-
+;;; reason-mode.el --- A major mode for editing ReasonML -*-lexical-binding: t-*-
 ;; Portions Copyright (c) 2015-present, Facebook, Inc. All rights reserved.
 
 ;; Version: 0.4.0
@@ -63,7 +63,7 @@
 
     table))
 
-(defgroup reason-mode nil
+(defgroup reason nil
   "Support for Reason code."
   :link '(url-link "http://facebook.github.io/reason/")
   :group 'languages)
@@ -71,7 +71,7 @@
 (defcustom reason-mode-hook nil
   "Hook called by `reason-mode'."
   :type 'hook
-  :group 'reason-mode)
+  :group 'reason)
 
 ;; Font-locking definitions and helpers
 (defconst reason-mode-keywords
@@ -116,13 +116,13 @@
 
 ;; (See PR #42 -- this is just like `(regexp-opt words 'symbols)` from
 ;; newer Emacs versions, but will work on Emacs 23.)
-(defun regexp-opt-symbols (words) (concat "\\_<" (regexp-opt words t) "\\_>"))
+(defun reason-regexp-opt-symbols (words) (concat "\\_<" (regexp-opt words t) "\\_>"))
 
 ;;; Syntax highlighting for Reason
 (defvar reason-font-lock-keywords
-  `((,(regexp-opt-symbols reason-mode-keywords) . font-lock-keyword-face)
-    (,(regexp-opt-symbols reason-special-types) . font-lock-builtin-face)
-    (,(regexp-opt-symbols reason-mode-consts) . font-lock-constant-face)
+  `((,(reason-regexp-opt-symbols reason-mode-keywords) . font-lock-keyword-face)
+    (,(reason-regexp-opt-symbols reason-special-types) . font-lock-builtin-face)
+    (,(reason-regexp-opt-symbols reason-mode-consts) . font-lock-constant-face)
 
     (,reason-camel-case 1 font-lock-type-face)
 
@@ -196,7 +196,7 @@
   "Major mode for Reason code.
 
 \\{reason-mode-map}"
-  :group 'reason-mode
+  :group 'reason
   :syntax-table reason-mode-syntax-table
   :keymap reason-mode-map
 
