@@ -96,8 +96,7 @@
 (defconst reason-special-types
   '("int" "float" "string" "char"
     "bool" "unit" "list" "array" "exn"
-    "option" "ref"
-))
+    "option" "ref"))
 
 (defconst reason-camel-case
   (rx symbol-start
@@ -111,12 +110,19 @@
                  (not (any "'\\")))
              (group "'")))))
 
-(defun reason-re-word (inner) (concat "\\<" inner "\\>"))
-(defun reason-re-grab (inner) (concat "\\(" inner "\\)"))
+(defun reason-re-word (inner)
+  "Build a word regexp given INNER."
+  (concat "\\<" inner "\\>"))
 
-;; (See PR #42 -- this is just like `(regexp-opt words 'symbols)` from
-;; newer Emacs versions, but will work on Emacs 23.)
-(defun reason-regexp-opt-symbols (words) (concat "\\_<" (regexp-opt words t) "\\_>"))
+(defun reason-re-grab (inner)
+  "Build a grab regexp given INNER."
+  (concat "\\(" inner "\\)"))
+
+(defun reason-regexp-opt-symbols (words)
+  "Like `(regexp-opt words 'symbols)`, but will work on Emacs 23.
+See rust-mode PR #42.
+Argument WORDS argument to pass to `regexp-opt`."
+  (concat "\\_<" (regexp-opt words t) "\\_>"))
 
 ;;; Syntax highlighting for Reason
 (defvar reason-font-lock-keywords
@@ -159,6 +165,8 @@
           (reason-mode-try-find-alternate-file mod-name ".rei")))))))
 
 (defun reason--syntax-propertize-multiline-string (end)
+  "Propertize Reason multiline string.
+Argument END marks the end of the string."
   (let ((ppss (syntax-ppss)))
     (when (eq t (nth 3 ppss))
       (let ((key (save-excursion
@@ -170,6 +178,9 @@
                              'syntax-table (string-to-syntax "|")))))))
 
 (defun reason-syntax-propertize-function (start end)
+  "Propertize Reason function.
+Argument START marks the beginning of the function.
+Argument END marks the end of the function."
   (goto-char start)
   (reason--syntax-propertize-multiline-string end)
   (funcall
@@ -228,6 +239,7 @@
 (add-to-list 'auto-mode-alist '("\\.rei?\\'" . reason-mode))
 
 (defun reason-mode-reload ()
+  "Reload Reason mode."
   (interactive)
   (unload-feature 'reason-mode)
   (unload-feature 'reason-indent)

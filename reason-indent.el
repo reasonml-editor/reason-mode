@@ -17,15 +17,27 @@
   :safe #'integerp)
 
 (defun reason-looking-back-str (str)
-  "Like `looking-back' but for fixed strings rather than regexps (so that it's not so slow)"
+  "Like `looking-back' but for fixed strings rather than regexps.
+Works around some regexp slowness.
+Argument STR string to search for."
   (let ((len (length str)))
     (and (> (point) len)
          (equal str (buffer-substring-no-properties (- (point) len) (point))))))
 
-(defun reason-paren-level () (nth 0 (syntax-ppss)))
-(defun reason-in-str-or-cmnt () (nth 8 (syntax-ppss)))
-(defun reason-rewind-past-str-cmnt () (goto-char (nth 8 (syntax-ppss))))
+(defun reason-paren-level ()
+  "Get the level of nesting inside parentheses."
+  (nth 0 (syntax-ppss)))
+
+(defun reason-in-str-or-cmnt ()
+  "Return whether point is currently inside a string or a comment."
+  (nth 8 (syntax-ppss)))
+
+(defun reason-rewind-past-str-cmnt ()
+  "Rewind past string or comment."
+  (goto-char (nth 8 (syntax-ppss))))
+
 (defun reason-rewind-irrelevant ()
+  "Rewind past irrelevant characters (whitespace of inside comments)."
   (interactive)
   (let ((starting (point)))
     (skip-chars-backward "[:space:]\n")
@@ -36,6 +48,7 @@
         (reason-rewind-irrelevant))))
 
 (defun reason-align-to-expr-after-brace ()
+  "Align the expression at point to the expression after the previous brace."
   (save-excursion
     (forward-char)
     ;; We don't want to indent out to the open bracket if the
@@ -47,6 +60,7 @@
       (current-column))))
 
 (defun reason-align-to-prev-expr ()
+  "Align the expression at point to the previous expression."
   (let ((alignment (save-excursion
                      (forward-char)
                      ;; We don't want to indent out to the open bracket if the
@@ -64,7 +78,7 @@
           (forward-line)
           (back-to-indentation)
           (current-column))
-        alignment)))
+      alignment)))
 
 ;;; Start of a reason binding
 (defvar reason-binding
@@ -77,7 +91,7 @@ With ARG, move backward multiple defuns.  Negative ARG means
 move forward.
 
 This is written mainly to be used as `beginning-of-defun-function'.
-Don't move to the beginning of the line. `beginning-of-defun',
+Don't move to the beginning of the line.  `beginning-of-defun',
 which calls this, does that afterwards."
   (interactive "p")
   (re-search-backward (concat "^\\(" reason-binding "\\)\\_>")
@@ -89,7 +103,7 @@ which calls this, does that afterwards."
 With argument, do it that many times.
 Negative argument -N means move back to Nth preceding end of defun.
 
-Assume that this is called after beginning-of-defun. So point is
+Assume that this is called after ‘beginning-of-defun’.  So point is
 at the beginning of the defun body.
 
 This is written mainly to be used as `end-of-defun-function' for Reason."
@@ -108,6 +122,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
     (goto-char (point-max))))
 
 (defun reason-rewind-to-beginning-of-current-level-expr ()
+  "Rewind to the beginning of the expression on the current level of nesting."
   (interactive)
   (let ((current-level (reason-paren-level)))
     (back-to-indentation)
@@ -119,6 +134,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
       (back-to-indentation))))
 
 (defun reason-mode-indent-line ()
+  "Indent current line."
   (interactive)
   (let ((indent
          (save-excursion
