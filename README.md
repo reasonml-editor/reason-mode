@@ -106,7 +106,7 @@ dotspacemacs-additional-packages
       :location (recipe
         :repo "reasonml-editor/reason-mode"
         :fetcher github
-        :files ("reason-mode.el" "refmt.el")))
+        :files ("reason-mode.el" "refmt.el" "reason-indent.el" "reason-interaction.el")))
 )
 ```
 
