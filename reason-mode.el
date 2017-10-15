@@ -5,7 +5,7 @@
 ;; Author: Mozilla
 ;; Url: https://github.com/reasonml-editor/reason-mode
 ;; Keywords: languages, ocaml
-;; Package-Requires: ((emacs "24.0"))
+;; Package-Requires: ((emacs "24.3"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -34,13 +34,6 @@
 (eval-when-compile (require 'rx)
                    (require 'compile)
                    (require 'url-vars))
-
-;; for GNU Emacs < 24.3
-(eval-when-compile
-  (unless (fboundp 'setq-local)
-    (defmacro setq-local (var val)
-      "Set variable VAR to value VAL in current buffer."
-      (list 'set (list 'make-local-variable (list 'quote var)) val))))
 
 ;; Syntax definitions and helpers
 (defvar reason-mode-syntax-table
@@ -200,11 +193,8 @@ Argument END marks the end of the function."
     (define-key map "\C-c\C-o" #'refmt-region-reason-to-ocaml)
     map))
 
-(defalias 'reason-parent-mode
-  (if (fboundp 'prog-mode) 'prog-mode 'fundamental-mode))
-
 ;;;###autoload
-(define-derived-mode reason-mode reason-parent-mode "Reason"
+(define-derived-mode reason-mode prog-mode "Reason"
   "Major mode for Reason code.
 
 \\{reason-mode-map}"
