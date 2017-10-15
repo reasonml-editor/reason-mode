@@ -83,7 +83,7 @@
     "module" "match" "mod" "move" "mutable"
     "open"
     "priv" "pub"
-    "rec" "ref" "return"
+    "raise" "rec" "ref" "return"
     "self" "static" "switch" "struct" "super"
     "trait" "type"
     "use"
