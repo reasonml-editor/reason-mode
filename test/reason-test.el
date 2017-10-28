@@ -298,6 +298,34 @@ fun foo() => {
 };
 "))
 
+(ert-deftest indent-jsx ()
+  (test-indent
+   "
+fun foo() => {
+  <div attr=\"bar\">
+    <img src=\"foo.png\"/>
+  </div>
+};
+"))
+
+(ert-deftest indent-jsx-2 ()
+  (test-indent
+   "
+let make keyInfo::k=? _children => {
+  ...component,
+  render: fun _ =>
+    <div className=\"App\">
+      <div className=\"header\">
+        <h2> foobar </h2>
+        <h3> bar baz quz </h3>
+      </div>
+      <div className=\"footer\">
+        <p> more here </p>
+      </div>
+    </div>
+};
+"))
+
 (defun reason-get-buffer-pos (pos-symbol)
   "Get buffer position from POS-SYMBOL.
 

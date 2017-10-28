@@ -151,25 +151,31 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                        0
                      (save-excursion
                        (reason-rewind-irrelevant)
-                       (backward-up-list)
-                       (reason-rewind-to-beginning-of-current-level-expr)
+                       (if (save-excursion
+                             (reason-rewind-to-beginning-of-current-level-expr)
+                             (looking-at "<"))
+                           (progn
+                             (reason-rewind-to-beginning-of-current-level-expr)
+                             (current-column))
+                           (progn
+                             (backward-up-list)
+                             (reason-rewind-to-beginning-of-current-level-expr)
 
-                       (cond
-                        ((looking-at "switch")
-                         (current-column))
+                             (cond
+                              ((looking-at "switch")
+                               (current-column))
 
-                        ((looking-at "|")
-                         (+ (current-column) (* reason-indent-offset 2)))
+                              ((looking-at "|")
+                               (+ (current-column) (* reason-indent-offset 2)))
 
-                        (t
-                         (let ((current-level (reason-paren-level)))
-                           (save-excursion
-                             (while (and (= current-level (reason-paren-level))
-                                         (not (looking-at reason-binding)))
-                               (reason-rewind-irrelevant)
-                               (reason-rewind-to-beginning-of-current-level-expr))
-                             (+ (current-column) reason-indent-offset)))))))))
-
+                              (t
+                               (let ((current-level (reason-paren-level)))
+                                 (save-excursion
+                                   (while (and (= current-level (reason-paren-level))
+                                               (not (looking-at reason-binding)))
+                                     (reason-rewind-irrelevant)
+                                     (reason-rewind-to-beginning-of-current-level-expr))
+                                   (+ (current-column) reason-indent-offset)))))))))))
              (cond
               ;; A function return type is indented to the corresponding function arguments
               ((looking-at "=>")
@@ -192,15 +198,21 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                 ;;
                 (t (+ baseline (+ reason-indent-offset 1)))))
 
+              ((looking-at "</") (- baseline reason-indent-offset))
+
               ;; A closing brace is 1 level unindented
               ((looking-at "}\\|)\\|\\]")
                (save-excursion
                  (reason-rewind-irrelevant)
-                 (backward-up-list)
-                 (reason-rewind-to-beginning-of-current-level-expr)
-                 (if (looking-at "switch")
-                     baseline
-                   (- baseline reason-indent-offset))))
+                 (let ((jsx? (reason-looking-back-str ">")))
+                   (backward-up-list)
+                   (reason-rewind-to-beginning-of-current-level-expr)
+                   (cond
+                    ((looking-at "switch") baseline)
+
+                    (jsx? (current-column))
+
+                    (t (- baseline reason-indent-offset))))))
 
               ;; Doc comments in /** style with leading * indent to line up the *s
               ((and (nth 4 (syntax-ppss)) (looking-at "*"))
@@ -263,6 +275,10 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                            (reason-rewind-irrelevant)
                            (backward-sexp)
                            (reason-align-to-prev-expr)))
+                        ((save-excursion
+                           (reason-rewind-irrelevant)
+                           (looking-back "<\/.*?>" (- (point) 30)))
+                         baseline)
                         (t
                          (save-excursion
                            (reason-rewind-irrelevant)
