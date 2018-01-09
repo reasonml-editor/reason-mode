@@ -121,7 +121,7 @@ auto-format:
 
 ```lisp
 (add-hook 'reason-mode-hook (lambda ()
-          (add-hook 'before-save-hook 'refmt-before-save)))
+          (add-hook 'before-save-hook #'refmt-before-save)))
 ```
 
 ### Tests via Cask + ERT
