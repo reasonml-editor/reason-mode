@@ -30,13 +30,13 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 
 ```sh
 ocamlc -version # 4.02.3
-which ocamlmerlin # a path with the word `.opam` in it, mandatorily
+which ocamlmerlin # a valid path to the ocamlmerlin binary, mandatorily
 ```
 
 
 Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
 
-```lisp
+```elisp
 ;;----------------------------------------------------------------------------
 ;; Reason setup
 ;;----------------------------------------------------------------------------
@@ -46,13 +46,18 @@ Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
    an error"
   (car (ignore-errors (apply 'process-lines (split-string cmd)))))
 
-(let* ((refmt-bin (or (shell-cmd "refmt ----where")
+(defun reason-cmd-where (cmd)
+  (let ((where (shell-cmd cmd)))
+    (if (not (string-equal "unknown flag ----where" where))
+      where)))
+
+(let* ((refmt-bin (or (reason-cmd-where "refmt ----where")
                       (shell-cmd "which refmt")))
-       (merlin-bin (or (shell-cmd "ocamlmerlin ----where")
+       (merlin-bin (or (reason-cmd-where "ocamlmerlin ----where")
                        (shell-cmd "which ocamlmerlin")))
        (merlin-base-dir (when merlin-bin
                           (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin))))
-  ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
+  ;; Add merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
   (when merlin-bin
     (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
     (setq merlin-command merlin-bin))
