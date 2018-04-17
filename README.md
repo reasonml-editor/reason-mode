@@ -3,7 +3,13 @@
 
 An Emacs major mode for [ReasonML](https://reasonml.github.io/).
 
-At the moment this plugin is not deployed on Elpa. The sections below explains how to manually install it.
+## Installation
+
+### MELPA
+
+If your Emacs has `package.el` (which is automatically the case for Emacs >= 24), you can install `reason-mode` from the package in [MELPA](https://melpa.org/#/getting-started).
+
+### QUELPA
 Alternatively, you can use [quelpa](https://github.com/quelpa/quelpa) and the following recipe:
 
 ```lisp
