@@ -209,8 +209,8 @@ Argument END marks the end of the function."
   ;; Fonts
   (setq-local font-lock-defaults '(reason-font-lock-keywords))
   ;; Misc
-  (setq-local comment-start "/*")
-  (setq-local comment-end   "*/")
+  (setq-local comment-start "/* ")
+  (setq-local comment-end   " */")
   (setq-local indent-tabs-mode nil)
   ;; Allow paragraph fills for comments
   (setq-local comment-start-skip "/\\*+[ \t]*")
