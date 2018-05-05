@@ -216,6 +216,17 @@ fun foo() => {
 };
 "))
 
+(ert-deftest indent-if ()
+  (test-indent
+   "
+fun foo() => {
+  if (blah) {
+    stuff
+  } else {
+    otherStuff
+  }
+}"))
+
 (ert-deftest indent-switch-multiline-pattern ()
   (test-indent
    "
