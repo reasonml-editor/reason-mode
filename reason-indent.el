@@ -165,6 +165,9 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                               ((looking-at "switch")
                                (current-column))
 
+                              (looking-at "if")
+                               (+ (current-column) reason-indent-offset)))
+
                               ((looking-at "|")
                                (+ (current-column) (* reason-indent-offset 2)))
 
