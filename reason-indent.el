@@ -168,7 +168,6 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                            (progn
                              (unless (and (looking-at "[[:space:]\n]*<")
                                           (reason-looking-back-str "=>"))
-                               (message "backward-up-list")
                                (backward-up-list))
                              (reason-rewind-to-beginning-of-current-level-expr)
 
@@ -184,7 +183,6 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
 
                               ((looking-at "[[:word:]]+:.*=> ?{?$")
                                (looking-at "[[:word:]]+:.*=> ?{?$")
-                               (message "foobar")
                                (+ (current-column) reason-indent-offset))
 
                               (t
