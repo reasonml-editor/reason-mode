@@ -182,7 +182,6 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                                (+ (current-column) (* reason-indent-offset 2)))
 
                               ((looking-at "[[:word:]]+:.*=> ?{?$")
-                               (looking-at "[[:word:]]+:.*=> ?{?$")
                                (+ (current-column) reason-indent-offset))
 
                               (t
