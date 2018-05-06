@@ -270,6 +270,28 @@ fun foo() => {
 };
 "))
 
+(ert-deftest indent-indented-object-func ()
+  (test-indent
+"
+module MyApp = {
+  type state = {db:db};
+  type action = Click;
+  let component = ReasonReact.reducerComponent(\"MyApp\");
+  let make = (_children) => {
+    ...component,
+    initialState: () => {db:[||]},
+    reducer: (a: action, s:state) =>
+      switch(a) {
+      | Click => ReasonReact.Update(s)
+      },
+    render: _self => {
+      let a = 20;
+      <Text value=\"foo\" />
+    }
+  }
+};
+"))
+
 (ert-deftest indented-multi-expr-switch ()
   (test-indent
    "
@@ -335,6 +357,24 @@ let make keyInfo::k=? _children => {
       </div>
     </div>
 };
+"))
+
+(ert-deftest indent-jsx-3 ()
+  (test-indent
+   "
+let make = (_children) => {
+  ...component,
+  render: self => {
+    let name = \"foo\";
+    let children = List.map(el => <Text value=el />, [\"foo\", \"bar\"]);
+    <View>
+      <Text value=name />
+      <View>
+        ...children
+      </View>
+    </View>
+  }
+}
 "))
 
 (defun reason-get-buffer-pos (pos-symbol)
