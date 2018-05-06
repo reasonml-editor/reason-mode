@@ -377,6 +377,21 @@ let make = (_children) => {
 };
 "))
 
+(ert-deftest indent-jsx-4 ()
+  (test-indent
+   "
+let make = (name, children) => {
+  ...component,
+  render: self =>
+    <View>
+      <Text value=name />
+      <View>
+        ...children
+      </View>
+    </View>
+};
+"))
+
 (defun reason-get-buffer-pos (pos-symbol)
   "Get buffer position from POS-SYMBOL.
 
