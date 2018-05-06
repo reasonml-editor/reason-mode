@@ -374,7 +374,7 @@ let make = (_children) => {
       </View>
     </View>
   }
-}
+};
 "))
 
 (defun reason-get-buffer-pos (pos-symbol)
