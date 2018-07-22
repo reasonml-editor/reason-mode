@@ -68,20 +68,27 @@
 
 ;; Font-locking definitions and helpers
 (defconst reason-mode-keywords
-  '("and" "as"
-    "else" "external"
-    "fun" "for"
-    "if" "impl" "in" "include"
-    "let"
-    "module" "match" "mod" "move" "mutable"
-    "open"
-    "priv" "pub"
-    "rec" "ref" "return"
-    "self" "static" "switch" "struct" "super"
-    "trait" "type"
-    "use"
-    "virtual"
-    "where" "when" "while"))
+  '("and" "as" "asr" "assert"
+    "begin"
+    "class" "constraint"
+    "do" "done" "downto"
+    "else" "end" "esfun"
+    "exception" "external"
+    "for" "fun" "function" "functor"
+    "if" "in" "include" "inherit" "initializer"
+    "land" "lazy" "let" "lor" "lsl" "lsr" "lxor"
+    "mod" "module" "mutable"
+    "new" "nonrec"
+    "object" "of" "open" "or"
+    "pri" "pub"
+    "rec" "ref"
+    "sig" "struct" "switch"
+    "then" "to" "try" "type"
+    "val" "virtual"
+    "when" "while" "with"
+
+    ;; these used to be keywords but no longer are
+    "match"))
 
 (defconst reason-mode-consts
   '("true" "false"))
