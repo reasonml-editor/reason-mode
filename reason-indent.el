@@ -150,23 +150,39 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                    (if (= 0 level)
                        0
                      (save-excursion
+                       ;; jsx, end of previous tag
                        (reason-rewind-irrelevant)
                        (if (save-excursion
                              (reason-rewind-to-beginning-of-current-level-expr)
-                             (looking-at "<"))
+                             ;; beginning of previous tag
+                             (looking-at "\\(<\\|\\.\\.\\.\\)"))
                            (progn
                              (reason-rewind-to-beginning-of-current-level-expr)
-                             (current-column))
+                             ;; beginning of previous tag
+                             (cond
+                              ((looking-at ".*\\(<.*/>\\|</.*>\\)") ;; (self) closing tag
+                               (current-column))
+                              ((looking-at "<")
+                               (+ (current-column) reason-indent-offset))
+                              (t (current-column))))
                            (progn
-                             (backward-up-list)
+                             (unless (and (looking-at "[[:space:]\n]*<")
+                                          (reason-looking-back-str "=>"))
+                               (backward-up-list))
                              (reason-rewind-to-beginning-of-current-level-expr)
 
                              (cond
                               ((looking-at "switch")
                                (current-column))
 
+                              ((looking-at "if")
+                               (+ (current-column) reason-indent-offset))
+
                               ((looking-at "|")
                                (+ (current-column) (* reason-indent-offset 2)))
+
+                              ((looking-at "[[:word:]]+:.*=> ?{?$")
+                               (+ (current-column) reason-indent-offset))
 
                               (t
                                (let ((current-level (reason-paren-level)))
@@ -199,6 +215,9 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                 (t (+ baseline (+ reason-indent-offset 1)))))
 
               ((looking-at "</") (- baseline reason-indent-offset))
+              ((looking-at "<") baseline)
+              ((looking-at "<.*/>") baseline)
+              ((looking-at "\\.\\.\\.") baseline)
 
               ;; A closing brace is 1 level unindented
               ((looking-at "}\\|)\\|\\]")

@@ -216,6 +216,17 @@ fun foo() => {
 };
 "))
 
+(ert-deftest indent-if ()
+  (test-indent
+   "
+fun foo() => {
+  if (blah) {
+    stuff
+  } else {
+    otherStuff
+  }
+}"))
+
 (ert-deftest indent-switch-multiline-pattern ()
   (test-indent
    "
@@ -256,6 +267,28 @@ fun foo() => {
     }
   };
   y();
+};
+"))
+
+(ert-deftest indent-indented-object-func ()
+  (test-indent
+"
+module MyApp = {
+  type state = {db:db};
+  type action = Click;
+  let component = ReasonReact.reducerComponent(\"MyApp\");
+  let make = (_children) => {
+    ...component,
+    initialState: () => {db:[||]},
+    reducer: (a: action, s:state) =>
+      switch(a) {
+      | Click => ReasonReact.Update(s)
+      },
+    render: _self => {
+      let a = 20;
+      <Text value=\"foo\" />
+    }
+  }
 };
 "))
 
@@ -323,6 +356,39 @@ let make keyInfo::k=? _children => {
         <p> more here </p>
       </div>
     </div>
+};
+"))
+
+(ert-deftest indent-jsx-3 ()
+  (test-indent
+   "
+let make = (_children) => {
+  ...component,
+  render: self => {
+    let name = \"foo\";
+    let children = List.map(el => <Text value=el />, [\"foo\", \"bar\"]);
+    <View>
+      <Text value=name />
+      <View>
+        ...children
+      </View>
+    </View>
+  }
+};
+"))
+
+(ert-deftest indent-jsx-4 ()
+  (test-indent
+   "
+let make = (name, children) => {
+  ...component,
+  render: self =>
+    <View>
+      <Text value=name />
+      <View>
+        ...children
+      </View>
+    </View>
 };
 "))
 
