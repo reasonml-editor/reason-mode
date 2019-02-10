@@ -89,6 +89,17 @@ If you have iedit mode set up:
 
 This associates `reason-mode` with `.re` and `.rei` files. To enable it explicitly, do <kbd>M-x reason-mode</kbd>.
 
+### Project specific version of `refmt`
+
+If you're using different versions of `refmt` between projects, you can use the project-specific installed version via the special config values:
+- `'npm` (calls `npx refmt ...` to use the version of `refmt` installed in the project's `node_modules`) 
+- `'opam` (calls `opam exec -- refmt ...` to use the version of `refmt` on the current `opam` switch):
+
+```lisp
+;; can also be set via M-x `customize-mode`
+(setq refmt-command 'npm)
+```
+
 ### Utop
 
 Reason-mode provides (opt-in) `rtop` support. At the moment only the native workflow is supported.
