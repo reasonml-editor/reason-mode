@@ -39,7 +39,8 @@
 (defcustom refmt-command "refmt"
   "The 'refmt' command."
   :type '(choice (file :tag "Filename (default binary is \"refmt\")")
-                 (const :tag "Use current opam switch" opam))
+                 (const :tag "Use current opam switch" opam)
+                 (const :tag "Use current npm version (via npx)" npm))
   :group 're-fmt)
 
 (defcustom refmt-show-errors 'buffer
@@ -199,11 +200,17 @@ function."
              (erase-buffer))
            (if (zerop (let* ((files (list (list :file outputfile) errorfile))
                              (args (append width-args (list "--parse" from "--print" to bufferfile))))
-                        (if (equal refmt-command 'opam)
-                            (apply 'call-process
-                                   "opam" nil files nil (append '("exec" "--" "refmt") args))
-                          (apply 'call-process
-                                 refmt-command nil files nil args))))
+                        (cond ((equal refmt-command 'opam)
+                               (apply 'call-process
+                                      "opam" nil files nil (append '("exec" "--" "refmt") args)))
+
+                              ((equal refmt-command 'npm)
+                               (apply 'call-process
+                                      "npx" nil files nil (append '("refmt") args)))
+
+                              (t
+                               (apply 'call-process
+                                      refmt-command nil files nil args)))))
                (progn
                  (call-process-region start end "diff" nil patchbuf nil "-n" "-"
                                       outputfile)
