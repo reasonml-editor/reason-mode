@@ -52,7 +52,8 @@ Add the following to your `~/.emacs` or `~/.emacs.d/init.el` file:
       where)))
 
 (let* ((refmt-bin (or (reason-cmd-where "refmt ----where")
-                      (shell-cmd "which refmt")))
+                      (shell-cmd "which refmt")
+                      (shell-cmd "which bsrefmt")))
        (merlin-bin (or (reason-cmd-where "ocamlmerlin ----where")
                        (shell-cmd "which ocamlmerlin")))
        (merlin-base-dir (when merlin-bin
