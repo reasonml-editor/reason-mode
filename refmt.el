@@ -36,6 +36,8 @@
 
 (require 'cl-lib)
 
+(defvar-local refmt-opam-bin-dir nil)
+
 (defcustom refmt-command "refmt"
   "The 'refmt' command."
   :type '(choice (file :tag "Filename (default binary is \"refmt\")")
@@ -201,8 +203,18 @@ function."
            (if (zerop (let* ((files (list (list :file outputfile) errorfile))
                              (args (append width-args (list "--parse" from "--print" to bufferfile))))
                         (cond ((equal refmt-command 'opam)
-                               (apply 'call-process
-                                      "opam" nil files nil (append '("exec" "--" "refmt") args)))
+                               ;; this was originally done via `opam exec' but that does not
+                               ;; work for opam 1, and added a performance hit
+                               (progn
+                                 (when (not refmt-opam-bin-dir)
+                                   (setq-local
+                                    refmt-opam-bin-dir
+                                    (with-temp-buffer
+                                      (when (eq (call-process-shell-command
+                                                 "opam config var bin" nil (current-buffer) nil) 0)
+                                        (replace-regexp-in-string "\n$" "" (buffer-string))))))
+
+                                 (apply 'call-process (concat refmt-opam-bin-dir "/refmt") nil files nil args)))
 
                               ((equal refmt-command 'npm)
                                (apply 'call-process
