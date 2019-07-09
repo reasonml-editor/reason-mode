@@ -42,7 +42,8 @@
   "The 'refmt' command."
   :type '(choice (file :tag "Filename (default binary is \"refmt\")")
                  (const :tag "Use current opam switch" opam)
-                 (const :tag "Use current npm version (via npx)" npm))
+                 (const :tag "Use current npm version (via npx)" npm)
+                 (const :tag "Use current esy version (via esy exec-command)" esy))
   :group 're-fmt)
 
 (defcustom refmt-show-errors 'buffer
@@ -219,6 +220,10 @@ function."
                               ((equal refmt-command 'npm)
                                (apply 'call-process
                                       "npx" nil files nil (append '("refmt") args)))
+
+                              ((equal refmt-command 'esy)
+                               (apply 'call-process
+                                      "esy" nil files nil (append '("exec-command" "refmt") args)))
 
                               (t
                                (apply 'call-process
