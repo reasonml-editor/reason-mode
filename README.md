@@ -5,6 +5,17 @@ An Emacs major mode for [ReasonML](https://reasonml.github.io/).
 
 ## Installation
 
+### Prerequisites
+
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason merlin`). Make sure you're on ocaml 4.06.1!
+
+**Please verify your installation**:
+
+```sh
+ocamlc -version # 4.02.3
+which ocamlmerlin # a valid path to the ocamlmerlin binary, mandatorily
+which ocamlmerlin-reason # a valid path to the ocamlmerlin-reason binary, mandatorily
+
 ### MELPA
 
 If your Emacs has `package.el` (which is automatically the case for Emacs >= 24), you can install `reason-mode` from the package in [MELPA](https://melpa.org/#/getting-started).
@@ -22,15 +33,6 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 
 ```lisp
 (add-to-list 'load-path "/path/to/vendor")
-```
-
-**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason.1.13.7 merlin.2.5.4`). Make sure you're on ocaml 4.02.3!
-
-**Please verify your installation**:
-
-```sh
-ocamlc -version # 4.02.3
-which ocamlmerlin # a valid path to the ocamlmerlin binary, mandatorily
 ```
 
 
