@@ -5,6 +5,21 @@ An Emacs major mode for [ReasonML](https://reasonml.github.io/).
 
 ## Installation
 
+### Prerequisites
+
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason merlin`). 
+
+If you are using bucklescript, make sure you are using a compatible OCaml version (you can find the version of ocaml compatible with your bucklescript installation by running `npm bsc -version`).
+At the time of writing this documentation, install OCaml 4.06.1 (for bucklescript 7.\*)
+
+**Please verify your installation**:
+
+```sh
+ocamlc -version # 4.06.1 if you are using bucklescript
+which ocamlmerlin # a valid path to the ocamlmerlin binary, mandatorily
+which ocamlmerlin-reason # a valid path to the ocamlmerlin-reason binary, mandatorily
+```
+
 ### MELPA
 
 If your Emacs has `package.el` (which is automatically the case for Emacs >= 24), you can install `reason-mode` from the package in [MELPA](https://melpa.org/#/getting-started).
@@ -22,15 +37,6 @@ Download `reason-indent.el`, `reason-interaction.el`, `reason-mode.el` and `refm
 
 ```lisp
 (add-to-list 'load-path "/path/to/vendor")
-```
-
-**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason.1.13.7 merlin.2.5.4`). Make sure you're on ocaml 4.02.3!
-
-**Please verify your installation**:
-
-```sh
-ocamlc -version # 4.02.3
-which ocamlmerlin # a valid path to the ocamlmerlin binary, mandatorily
 ```
 
 
@@ -119,8 +125,10 @@ After this, the function `utop` (`C-c C-s`) will start `rtop` in Reason buffers.
 
 ### Spacemacs
 
-There is currently no official reason layer available, but you can install the `reason-mode` package automatically.
-Some are working on a layer in the meantime [#1149](https://github.com/facebook/reason/issues/1149).
+The [`reasonml`](https://develop.spacemacs.org/layers/+lang/reasonml/README.html) layer is available in the develop version of spacemacs.
+
+
+For the stable version of spacemacs, you can install the `reason-mode` package automatically.
 
 ```lisp
 dotspacemacs-additional-packages
