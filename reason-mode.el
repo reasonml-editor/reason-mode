@@ -233,7 +233,7 @@ Argument END marks the end of the function."
   (setq-local parse-sexp-lookup-properties t))
 
 ;;;###autoload
-(add-to-list 'auto-mode-alist '("\\.rei?\\'" . reason-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(resi?\\|rei?\\)$" . reason-mode))
 
 (defun reason-mode-reload ()
   "Reload Reason mode."
