@@ -262,7 +262,7 @@ This is written mainly to be used as `end-of-defun-function' for Reason."
                            (while (looking-at "|")
                              (reason-rewind-irrelevant)
                              (back-to-indentation))
-                           (looking-at (regexp-opt '("type"))))
+                           (looking-at (regexp-opt '("and" "type"))))
                          (+ baseline reason-indent-offset))
                         ((looking-at "|\\|/[/*]")
                          baseline)
