@@ -7,7 +7,7 @@ An Emacs major mode for [ReasonML](https://reasonml.github.io/).
 
 ### Prerequisites
 
-**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by by installing them from OPAM (`opam install reason merlin`). 
+**Note**: the following setup assumes Reason and Merlin are installed. This can be achieved by installing them from OPAM (`opam install reason merlin`). 
 
 If you are using bucklescript, make sure you are using a compatible OCaml version (you can find the version of ocaml compatible with your bucklescript installation by running `npm bsc -version`).
 At the time of writing this documentation, install OCaml 4.06.1 (for bucklescript 7.\*)
