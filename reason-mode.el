@@ -32,6 +32,7 @@
 (require 'reason-interaction)
 
 (eval-when-compile (require 'rx)
+                   (require 'find-file)
                    (require 'compile)
                    (require 'url-vars))
 
@@ -144,25 +145,8 @@ Argument WORDS argument to pass to `regexp-opt`."
      (concat "<[/]?" (reason-re-grab reason-re-ident) "[^>]*" ">")
      1 font-lock-type-face)))
 
-(defun reason-mode-try-find-alternate-file (mod-name extension)
-  "Switch to the file given by MOD-NAME and EXTENSION."
-  (let* ((filename (concat mod-name extension))
-         (buffer (get-file-buffer filename)))
-    (if buffer (switch-to-buffer buffer)
-      (find-file filename))))
-
-(defun reason-mode-find-alternate-file ()
-  "Switch to implementation/interface file."
-  (interactive)
-  (let ((name buffer-file-name))
-    (when (string-match "\\`\\(.*\\)\\.re\\(i\\)?\\'" name)
-      (let ((mod-name (match-string 1 name))
-            (e (match-string 2 name)))
-        (cond
-         ((string= e "i")
-          (reason-mode-try-find-alternate-file mod-name ".re"))
-         (t
-          (reason-mode-try-find-alternate-file mod-name ".rei")))))))
+(defalias 'reason-mode-find-alternate-file #'ff-get-other-file
+  "Switch to implementation/interface file.")
 
 (defun reason--syntax-propertize-multiline-string (end)
   "Propertize Reason multiline string.
@@ -200,6 +184,12 @@ Argument END marks the end of the function."
     (define-key map "\C-c\C-o" #'refmt-region-reason-to-ocaml)
     map))
 
+(defvar reason-mode-search-directories '("."))
+
+(defvar reason-mode-other-file-alist
+  '(("\\.rei\\'" (".re"))
+    ("\\.re\\'" (".rei"))))
+
 ;;;###autoload
 (define-derived-mode reason-mode prog-mode "Reason"
   "Major mode for Reason code.
@@ -219,6 +209,8 @@ Argument END marks the end of the function."
   (setq-local comment-start "/* ")
   (setq-local comment-end   " */")
   (setq-local indent-tabs-mode nil)
+  (setq-local ff-search-directories reason-mode-search-directories)
+  (setq-local ff-other-file-alist reason-mode-other-file-alist)
   ;; Allow paragraph fills for comments
   (setq-local comment-start-skip "/\\*+[ \t]*")
   (setq-local paragraph-start
