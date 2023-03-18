@@ -155,7 +155,7 @@ Argument WORDS argument to pass to `regexp-opt`."
   "Switch to implementation/interface file."
   (interactive)
   (let ((name buffer-file-name))
-    (when (string-match "\\`\\(.*\\)\\.re\\([il]\\)?\\'" name)
+    (when (string-match "\\`\\(.*\\)\\.re\\(i\\)?\\'" name)
       (let ((mod-name (match-string 1 name))
             (e (match-string 2 name)))
         (cond
