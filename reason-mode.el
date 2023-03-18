@@ -188,7 +188,9 @@ Argument END marks the end of the function."
 
 (defvar reason-mode-other-file-alist
   '(("\\.rei\\'" (".re"))
-    ("\\.re\\'" (".rei"))))
+    ("\\.re\\'" (".rei"))
+    ("\\.resi\\'" (".res"))
+    ("\\.res\\'" (".resi"))))
 
 ;;;###autoload
 (define-derived-mode reason-mode prog-mode "Reason"
